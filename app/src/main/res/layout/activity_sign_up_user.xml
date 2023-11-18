@@ -293,5 +293,4 @@ tools:context=".Sign_up_user">
                         android:textSize="17sp"/>
                 </LinearLayout>
             </LinearLayout>
-
 </ScrollView>
