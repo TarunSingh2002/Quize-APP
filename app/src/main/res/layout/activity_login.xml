@@ -49,16 +49,18 @@
             android:id="@+id/password"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:hint="Email address"
+            android:hint="Password"
             app:boxStrokeColor="@drawable/edit_text_stroke_color_selector"
             app:hintTextAppearance="@style/HintTextAppearance"
             app:hintTextColor="@color/white"
+            app:passwordToggleEnabled="true"
+            app:passwordToggleTint="@color/golden"
             style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox">
             <com.google.android.material.textfield.TextInputEditText
                 android:id="@+id/password_string"
                 android:layout_width="match_parent"
                 android:layout_height="60dp"
-                android:inputType="textPersonName"
+                android:inputType="textPassword"
                 android:textSize="16sp"
                 android:textColor="@color/golden" />
         </com.google.android.material.textfield.TextInputLayout>
@@ -73,6 +75,7 @@
             android:textSize="17sp"
             android:paddingBottom="20dp"/>
         <androidx.appcompat.widget.AppCompatButton
+            android:id="@+id/login"
             android:layout_width="match_parent"
             android:layout_height="60dp"
             android:background="@drawable/button_style_three"
