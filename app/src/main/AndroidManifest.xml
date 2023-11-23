@@ -31,7 +31,8 @@
         </activity>
         <activity
             android:name=".login"
-            android:exported="false" />
+            android:exported="false"
+            android:theme="@style/sign_up"/>
         <activity
             android:name=".MainActivity"
             android:exported="false" />

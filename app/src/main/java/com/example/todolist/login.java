@@ -31,7 +31,8 @@ private TextInputLayout email , password;
 private AppCompatButton login;
 private ALoadingDialog aLoadingDialog;
 private FirebaseAuth authProfile;
-private final static String TAG = "login";
+private final static String TAG = "login" ;
+private String text_email="" , text_pwd ="";
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -69,6 +70,8 @@ private final static String TAG = "login";
                 String email = email_string.getText().toString() , pwd = password_string.getText().toString();
                 email=trimStartEndSpaces(email);
                 pwd=trimStartEndSpaces(pwd);
+                text_email=email;
+                text_pwd=pwd;
                 if(validateEmail(email) && validatePassword(pwd))
                 {
                     aLoadingDialog.show();
@@ -208,7 +211,7 @@ private final static String TAG = "login";
     @Override
     protected void onStart() {
         super.onStart();
-        if(authProfile.getCurrentUser() != null){
+        if(authProfile.getCurrentUser() != null ){
             Intent intent = new Intent(login.this, profile.class);
             intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_NEW_TASK);
             startActivity(intent);
