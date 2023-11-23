@@ -43,8 +43,10 @@ public class Sign_up_user extends AppCompatActivity {
     private RadioButton radioButton;
     private RadioGroup radioGroup;
     private AppCompatButton register;
+    private String login_email , login_pwd;
     private static final String TAG ="Sign_up_user";  // register User function
     private DatePickerDialog picker;
+    private boolean isRegistered =false;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -90,6 +92,8 @@ public class Sign_up_user extends AppCompatActivity {
                 number=trimStartEndSpaces(number);
                 password_again=trimStartEndSpaces(password_again);
                 gender=trimStartEndSpaces(gender);
+                login_email=email;
+                login_pwd=password;
                 if (validateName(name) && validateEmail(email) && validatePhoneNo(number) && validateDOB(dateOfBirth) && validatePassword(password) && validateConfirmPassword(password, password_again)) {
                     if (!isChecked) {
                         Toast.makeText(Sign_up_user.this, "Please first accept the term's and conditions", Toast.LENGTH_LONG).show();
@@ -183,10 +187,9 @@ public class Sign_up_user extends AppCompatActivity {
                                             {
                                                 //sending verification email
                                                 firebaseUser.sendEmailVerification();
-                                                Intent intent = new Intent(Sign_up_user.this, profile.class);
-                                                intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_SINGLE_TOP);
-                                                startActivity(intent);
-                                                finish();
+                                                isRegistered =true;
+                                                auth.signOut();
+                                                showAlertDialog();
                                             }
                                             else
                                             { // doing exception handling for the task of saving data in db
@@ -398,4 +401,54 @@ public class Sign_up_user extends AppCompatActivity {
         return input.substring(start, end + 1);
     }
 
+    private void showAlertDialog() {  // showing dialog box for email verification
+        AlertDialog.Builder builder = new AlertDialog.Builder(Sign_up_user.this);
+        builder.setTitle("Email Not Verified");
+        builder.setCancelable(false);
+        builder.setMessage("Please verify your email now. You can not login without email verification");
+        // open Email App if User click/taps Continue button
+        builder.setPositiveButton("continue", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialogInterface, int which) {
+                Intent intent = new Intent(Intent.ACTION_MAIN);
+                intent.addCategory(Intent.CATEGORY_APP_EMAIL);
+                intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK); // To email app in new window and not within our app
+                startActivity(intent);
+            }
+        });
+        //Create the AlertDialog
+        AlertDialog alertDialog = builder.create();
+        //Show the  Alert Dialog
+        alertDialog.show();
+    }
+
+    @Override
+    protected void onStart() {
+        super.onStart();
+        if(isRegistered)
+        {
+            FirebaseAuth.getInstance().signInWithEmailAndPassword(login_email,login_pwd).addOnCompleteListener(Sign_up_user.this, new OnCompleteListener<AuthResult>() {
+                @Override
+                public void onComplete(@NonNull Task<AuthResult> task) {
+                    if(task.isSuccessful())
+                    {
+                        if(FirebaseAuth.getInstance().getCurrentUser().isEmailVerified()){
+                            Intent intent = new Intent(Sign_up_user.this, profile.class);
+                            intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_NEW_TASK);
+                            startActivity(intent);
+                            finish();
+                        }
+                        else{
+                            showAlertDialog();
+                        }
+                    }
+                    else
+                    {
+
+                    }
+                }
+            });
+
+        }
+    }
 }
