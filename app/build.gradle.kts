@@ -48,5 +48,4 @@ dependencies {
     implementation("com.google.firebase:firebase-analytics")
     //lottie animation
     implementation("com.airbnb.android:lottie:6.1.0")
-
 }
