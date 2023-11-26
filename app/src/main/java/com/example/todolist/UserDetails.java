@@ -7,4 +7,5 @@ public class UserDetails {
         this.gender=gender;
         this.number=number;
     }
+    public UserDetails(){};
 }

@@ -25,13 +25,13 @@ import com.google.firebase.auth.FirebaseAuthInvalidUserException;
 import com.google.firebase.auth.FirebaseUser;
 
 public class login extends AppCompatActivity {
-private TextView a,b;
+private TextView a,b,forgot_password;
 private EditText email_string , password_string;
 private TextInputLayout email , password;
 private AppCompatButton login;
 private ALoadingDialog aLoadingDialog;
 private FirebaseAuth authProfile;
-private final static String TAG = "login" ;
+private final static String TAG = "login";
 private String text_email="" , text_pwd ="";
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -46,7 +46,15 @@ private String text_email="" , text_pwd ="";
         password_string=findViewById(R.id.password_string);
         aLoadingDialog = new ALoadingDialog(this);
         authProfile = FirebaseAuth.getInstance();
-
+        forgot_password =findViewById(R.id.forgot_password);
+        forgot_password.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent intent = new Intent(login.this, forgot_password.class);
+                intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_SINGLE_TOP);
+                startActivity(intent);
+            }
+        });
         a.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -100,6 +108,7 @@ private String text_email="" , text_pwd ="";
                         authProfile.signOut();
                         showAlertDialog();
                     }
+                    aLoadingDialog.cancel(); //stopping the progress bar
                 }
                 else{
                     try{
@@ -119,8 +128,8 @@ private String text_email="" , text_pwd ="";
                         Log.e(TAG ,e.getMessage());
                         Toast.makeText(login.this, e.getMessage(), Toast.LENGTH_SHORT).show();
                     }
+                    aLoadingDialog.cancel(); //stopping the progress bar
                 }
-                aLoadingDialog.cancel(); //stopping the progress bar
             }
         });
 
