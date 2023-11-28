@@ -1,10 +1,12 @@
 package com.example.todolist;
 
 import androidx.annotation.NonNull;
+import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.AppCompatButton;
 import androidx.appcompat.widget.AppCompatTextView;
 
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
@@ -21,6 +23,7 @@ import com.google.firebase.database.ValueEventListener;
 
 public class profile extends AppCompatActivity {
 
+    ImageView circularImageView;
     private FirebaseAuth auth;
     AppCompatButton btn;
     private ALoadingDialog aLoadingDialog;
@@ -47,6 +50,23 @@ public class profile extends AppCompatActivity {
         dob_view  = findViewById(R.id.dob);
         gender_view  = findViewById(R.id.gender);
         number_view  = findViewById(R.id.number);
+        //change button click listener
+        email_change.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent intent = new Intent(profile.this, update_email.class);
+                intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_SINGLE_TOP);
+                startActivity(intent);
+                finish();
+            }
+        });
+        circularImageView = findViewById(R.id.circularImageView);
+        circularImageView.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                showAvatarPickerDialog();
+            }
+        });
         btn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -66,6 +86,48 @@ public class profile extends AppCompatActivity {
             aLoadingDialog.show();
             showUserProfile(firebaseUser);
         }
+    }
+
+    private void showAvatarPickerDialog() {
+        // Inflate the custom dialog layout
+        View dialogView = getLayoutInflater().inflate(R.layout.avatar, null);
+        // Create a dialog
+        AlertDialog.Builder dialogBuilder = new AlertDialog.Builder(this);
+        dialogBuilder.setView(dialogView);
+        // Find ImageViews and set click listeners for avatars
+        ImageView avatar1 = dialogView.findViewById(R.id.avatar1);
+        ImageView avatar2 = dialogView.findViewById(R.id.avatar2);
+        // Add click listeners to ImageViews to select avatars
+        avatar1.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                // Set avatar 1 as selected
+                // Handle selection or store the selected avatar
+                Toast.makeText(profile.this, "avatar1", Toast.LENGTH_SHORT).show();
+            }
+        });
+        avatar2.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                // Set avatar 2 as selected
+                // Handle selection or store the selected avatar
+                Toast.makeText(profile.this, "avatar2", Toast.LENGTH_SHORT).show();
+            }
+        });
+
+        // Set OK button click listener
+        dialogBuilder.setPositiveButton("OK", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialogInterface, int i) {
+                // Retrieve the selected avatar and set it as the user's profile picture
+                // Implement logic to set the selected avatar
+                // For example:
+                // userProfilePicImageView.setImageResource(selectedAvatarResource);
+                Toast.makeText(profile.this, "ok", Toast.LENGTH_SHORT).show();
+            }
+        });
+
+        dialogBuilder.create().show(); // Show the dialog
     }
 
     private void showUserProfile(FirebaseUser firebaseUser) {

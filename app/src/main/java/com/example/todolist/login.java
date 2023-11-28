@@ -98,7 +98,7 @@ private String text_email="" , text_pwd ="";
                     // showing a dialog box if email not verified
                     FirebaseUser firebaseUser = authProfile.getCurrentUser();
                     if(firebaseUser.isEmailVerified()){
-                        Intent intent = new Intent(login.this, profile.class);
+                        Intent intent = new Intent(login.this, MainActivity2.class);
                         intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_NEW_TASK);
                         startActivity(intent);
                         finish();
@@ -221,7 +221,7 @@ private String text_email="" , text_pwd ="";
     protected void onStart() {
         super.onStart();
         if(authProfile.getCurrentUser() != null ){
-            Intent intent = new Intent(login.this, profile.class);
+            Intent intent = new Intent(login.this, MainActivity2.class);
             intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_NEW_TASK);
             startActivity(intent);
             finish();

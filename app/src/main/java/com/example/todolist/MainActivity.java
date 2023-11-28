@@ -33,7 +33,7 @@ private FirebaseAuth authProfile;
     protected void onStart() {
         super.onStart();
         if(authProfile.getCurrentUser() != null){
-            Intent intent = new Intent(MainActivity.this, profile.class);
+            Intent intent = new Intent(MainActivity.this, MainActivity2.class);
             intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_NEW_TASK);
             startActivity(intent);
             finish();

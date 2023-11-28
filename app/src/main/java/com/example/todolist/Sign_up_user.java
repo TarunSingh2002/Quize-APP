@@ -433,7 +433,7 @@ public class Sign_up_user extends AppCompatActivity {
                     if(task.isSuccessful())
                     {
                         if(FirebaseAuth.getInstance().getCurrentUser().isEmailVerified()){
-                            Intent intent = new Intent(Sign_up_user.this, profile.class);
+                            Intent intent = new Intent(Sign_up_user.this, MainActivity2.class);
                             intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_NEW_TASK);
                             startActivity(intent);
                             finish();
