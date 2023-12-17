@@ -322,7 +322,7 @@
                android:layout_width="0dp"
                android:layout_height="150dp"
                android:layout_columnWeight="1"
-               android:src="@drawable/avatar2"/>
+               android:src="@drawable/avatar42"/>
            <ImageView
                android:id="@+id/avatar43"
                android:layout_width="0dp"
