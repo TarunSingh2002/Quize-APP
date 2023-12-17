@@ -22,7 +22,6 @@
                 android:id="@+id/circularImageView"
                 android:layout_width="150dp"
                 android:layout_height="150dp"
-                android:src="@drawable/avatar7"
                 android:padding="5dp"
                 android:background="@drawable/circular_background"
                 android:scaleType="centerCrop"
