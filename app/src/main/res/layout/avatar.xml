@@ -21,14 +21,18 @@
            android:rowCount="25"
            android:columnCount="2"
            android:layout_gravity="center">
-           <ImageView
-               android:id="@+id/avatar6"
+           <FrameLayout
+               android:id="@+id/temp"
                android:layout_width="0dp"
                android:layout_height="150dp"
-               android:layout_columnWeight="1"
-               android:background="@drawable/empty_background_image_view"
-               android:src="@drawable/avatar_six"/>
-
+               android:layout_columnWeight="1">
+               <ImageView
+                   android:id="@+id/avatar6"
+                   android:layout_width="match_parent"
+                   android:layout_height="150dp"
+                   android:background="@drawable/empty_background_image_view"
+                   android:src="@drawable/avatar_six"/>
+           </FrameLayout>
            <ImageView
                android:id="@+id/avatar23"
                android:layout_width="0dp"
