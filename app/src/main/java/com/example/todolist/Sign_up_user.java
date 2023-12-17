@@ -177,6 +177,31 @@ public class Sign_up_user extends AppCompatActivity {
 
                             //save user data also into firebase
                             UserDetails writeUserDetails = new UserDetails(dateOfBirth , gender , number); // UserDetails is a new class which gonna add data into firebase
+                            String avatarID="avatar23";
+                            if(gender.equalsIgnoreCase("Male"))
+                                avatarID="avatar6";
+                            Avatar avatar = new Avatar(avatarID);
+                            DatabaseReference referenceAvatar = FirebaseDatabase.getInstance().getReference("User Avatar");
+                            referenceAvatar.child(firebaseUser.getUid()).setValue(avatar)
+                                            .addOnCompleteListener(new OnCompleteListener<Void>() {
+                                                @Override
+                                                public void onComplete(@NonNull Task<Void> task) {
+                                                    if(task.isSuccessful())
+                                                    {
+                                                        //do nothing
+                                                    }
+                                                    else {
+                                                        try{
+                                                            throw task.getException();
+                                                        }
+                                                        catch (Exception e)
+                                                        {
+                                                            Log.e(TAG ,e.getMessage());
+                                                            Toast.makeText(Sign_up_user.this, e.getMessage(), Toast.LENGTH_SHORT).show();
+                                                        }
+                                                    }
+                                                }
+                                            });
                             //Creating a Parent node(named User Details) in data base and getting the reference
                             DatabaseReference referenceProfile = FirebaseDatabase.getInstance().getReference("User Details");
                             referenceProfile.child(firebaseUser.getUid()).setValue(writeUserDetails)  //creating child nodes with name == uid (user id given by firebase) + setValue function will set the value in the child node(in it we will send object of our java class)
