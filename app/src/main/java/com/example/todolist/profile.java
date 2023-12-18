@@ -28,6 +28,8 @@ import android.widget.EditText;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
+import android.widget.RadioButton;
+import android.widget.RadioGroup;
 import android.widget.Switch;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -65,6 +67,8 @@ public class profile extends AppCompatActivity {
     private AppCompatTextView name_view , email_view , dob_view  , gender_view , number_view;
     private AppCompatButton name_change , email_change , dob_change  , gender_change , number_change;
     private String name , email , dob  , gender , phone_number;
+    private RadioButton radioButton;
+    private RadioGroup radioGroup;
     private String currentAvatar , previousAvatar;
     private FirebaseDatabase database = FirebaseDatabase.getInstance();
     private DatabaseReference userRef = database.getReference("User Details");
@@ -356,17 +360,29 @@ public class profile extends AppCompatActivity {
         gender_change.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                /* View dialogView = getLayoutInflater().inflate(R.layout.dialog_box, null);
+                View dialogView = getLayoutInflater().inflate(R.layout.dialog_box_for_gender, null);
                 AlertDialog.Builder dialogBuilder = new AlertDialog.Builder(profile.this);
                 dialogBuilder.setView(dialogView);
                 // getting views
                 AppCompatButton btn =dialogView.findViewById(R.id.ok);
-                TextInputLayout layout =dialogView.findViewById(R.id.input_layout);
-                AppCompatEditText editText = dialogView.findViewById(R.id.input);
                 TextView title = dialogView.findViewById(R.id.title);
+                radioGroup=dialogView.findViewById(R.id.gender);
+                if(gender.equalsIgnoreCase("male"))
+                {
+                    int i = R.id.male_dialogbox;
+                    radioGroup.check(i);
+                }
+                else if(gender.equalsIgnoreCase("female"))
+                {
+                    int i = R.id.female_dialogbox;
+                    radioGroup.check(i);
+                }
+                else {
+                    int i = R.id.others_dialogbox;
+                    radioGroup.check(i);
+                }
                 // setting the data in dialog box
-                title.setText("Update Name");
-                layout.setHint("User Name");
+                title.setText("Update Your Gender");
                 AlertDialog alertDialog = dialogBuilder.create();
                 alertDialog.setOnShowListener(new DialogInterface.OnShowListener() {
                     @Override
@@ -380,28 +396,46 @@ public class profile extends AppCompatActivity {
                 btn.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View view) {
-                        String new_name = editText.getText().toString();
-                        if(validateName(new_name).equalsIgnoreCase("empty"))
+                        int selectedGenderId = radioGroup.getCheckedRadioButtonId();
+                        radioButton = dialogView.findViewById(selectedGenderId);
+                        String new_gender = radioButton.getText().toString();
+                        if(new_gender.equalsIgnoreCase(gender))
                         {
-                            layout.setError("Field cannot be empty");
-                            layout.requestFocus();
-                        }
-                        else if(validateName(new_name).equalsIgnoreCase("same"))
-                        {
-                            layout.setError("Name cannot be same as before");
-                            layout.requestFocus();
+                            Toast.makeText(profile.this, "Same Gender", Toast.LENGTH_SHORT).show();
                         }
                         else
                         {
                             aLoadingDialog.show();
-                            name_view.setText(new_name);
-                            UserProfileChangeRequest profileChangeRequest = new UserProfileChangeRequest.Builder().setDisplayName(new_name).build();
-                            firebaseUser.updateProfile(profileChangeRequest);
-                            aLoadingDialog.cancel();
-                            alertDialog.dismiss();
+                            //setting data in database
+                            Map<String, Object> updateGender = new HashMap<>();
+                            updateGender.put("gender", new_gender);
+                            userRef.child(firebaseUser.getUid()).updateChildren(updateGender).addOnCompleteListener(new OnCompleteListener<Void>() {
+                                @Override
+                                public void onComplete(@NonNull Task<Void> task) {
+                                    if(task.isSuccessful())
+                                    {
+                                        //do nothing
+                                        gender_view.setText(new_gender);
+                                        alertDialog.dismiss();
+                                        aLoadingDialog.cancel();
+                                        gender=new_gender;
+                                    }
+                                    else
+                                    {
+                                        try{
+                                            throw task.getException();
+                                        }
+                                        catch (Exception e)
+                                        {
+                                            Toast.makeText(profile.this, e.getMessage(), Toast.LENGTH_SHORT).show();
+                                        }
+                                        aLoadingDialog.cancel();
+                                    }
+                                }
+                            });
                         }
                     }
-                });*/
+                });
             }
         });
         circularImageView = findViewById(R.id.circularImageView);
