@@ -66,7 +66,7 @@ public class profile extends AppCompatActivity {
     private ALoadingDialog aLoadingDialog;
     private AppCompatTextView name_view , email_view , dob_view  , gender_view , number_view;
     private AppCompatButton name_change , email_change , dob_change  , gender_change , number_change;
-    private String name , email , dob  , gender , phone_number;
+    private String name , email , dob  , gender , phone_number, new_number , new_name;
     private RadioButton radioButton;
     private RadioGroup radioGroup;
     private String currentAvatar , previousAvatar;
@@ -131,7 +131,8 @@ public class profile extends AppCompatActivity {
                 btn.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View view) {
-                        String new_name = editText.getText().toString();
+                        new_name = editText.getText().toString();
+                        new_name=trimStartEndSpaces(new_name);
                         if(validateName(new_name).equalsIgnoreCase("empty"))
                         {
                             layout.setError("Field cannot be empty");
@@ -183,7 +184,8 @@ public class profile extends AppCompatActivity {
                 btn.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View view) {
-                        String new_number = editText.getText().toString();
+                         new_number = editText.getText().toString();
+                         new_number=trimStartEndSpaces(new_number);
                         if(validatePhoneNo(new_number).equalsIgnoreCase("empty"))
                         {
                             layout.setError("Field cannot be empty");
@@ -1606,5 +1608,21 @@ public class profile extends AppCompatActivity {
         else {
             return "true";
         }
+    }
+    public static String trimStartEndSpaces(String input) {
+        int start = 0;
+        int end = input.length() - 1;
+
+        // Trim leading spaces
+        while (start <= end && Character.isWhitespace(input.charAt(start))) {
+            start++;
+        }
+
+        // Trim trailing spaces
+        while (end >= start && Character.isWhitespace(input.charAt(end))) {
+            end--;
+        }
+
+        return input.substring(start, end + 1);
     }
 }
