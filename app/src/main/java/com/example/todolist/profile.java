@@ -154,7 +154,7 @@ public class profile extends AppCompatActivity {
         number_change.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                /* View dialogView = getLayoutInflater().inflate(R.layout.dialog_box, null);
+                View dialogView = getLayoutInflater().inflate(R.layout.dialog_box, null);
                 AlertDialog.Builder dialogBuilder = new AlertDialog.Builder(profile.this);
                 dialogBuilder.setView(dialogView);
                 // getting views
@@ -163,8 +163,9 @@ public class profile extends AppCompatActivity {
                 AppCompatEditText editText = dialogView.findViewById(R.id.input);
                 TextView title = dialogView.findViewById(R.id.title);
                 // setting the data in dialog box
-                title.setText("Update Name");
-                layout.setHint("User Name");
+                title.setText("Update Phone Number");
+                layout.setHint("User Phone Number");
+                title.setInputType(InputType.TYPE_CLASS_PHONE);
                 AlertDialog alertDialog = dialogBuilder.create();
                 alertDialog.setOnShowListener(new DialogInterface.OnShowListener() {
                     @Override
@@ -178,28 +179,55 @@ public class profile extends AppCompatActivity {
                 btn.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View view) {
-                        String new_name = editText.getText().toString();
-                        if(validateName(new_name).equalsIgnoreCase("empty"))
+                        String new_number = editText.getText().toString();
+                        if(validatePhoneNo(new_number).equalsIgnoreCase("empty"))
                         {
                             layout.setError("Field cannot be empty");
                             layout.requestFocus();
                         }
-                        else if(validateName(new_name).equalsIgnoreCase("same"))
+                        else if(validatePhoneNo(new_number).equalsIgnoreCase("same"))
                         {
                             layout.setError("Name cannot be same as before");
                             layout.requestFocus();
                         }
+                        else if(validatePhoneNo(new_number).equalsIgnoreCase("invalid"))
+                        {
+                            layout.setError("Invalid phone number");
+                            layout.requestFocus();
+                        }
                         else
                         {
+
                             aLoadingDialog.show();
-                            name_view.setText(new_name);
-                            UserProfileChangeRequest profileChangeRequest = new UserProfileChangeRequest.Builder().setDisplayName(new_name).build();
-                            firebaseUser.updateProfile(profileChangeRequest);
-                            aLoadingDialog.cancel();
-                            alertDialog.dismiss();
+                            //setting data in database
+                            Map<String, Object> updateNumber = new HashMap<>();
+                            updateNumber.put("number", new_number);
+                            userRef.child(firebaseUser.getUid()).updateChildren(updateNumber).addOnCompleteListener(new OnCompleteListener<Void>() {
+                                @Override
+                                public void onComplete(@NonNull Task<Void> task) {
+                                    if(task.isSuccessful())
+                                    {
+                                        //do nothing
+                                        number_view.setText(new_number);
+                                        alertDialog.dismiss();
+                                        aLoadingDialog.cancel();
+                                    }
+                                    else
+                                    {
+                                        try{
+                                            throw task.getException();
+                                        }
+                                        catch (Exception e)
+                                        {
+                                            Toast.makeText(profile.this, e.getMessage(), Toast.LENGTH_SHORT).show();
+                                        }
+                                        aLoadingDialog.cancel();
+                                    }
+                                }
+                            });
                         }
                     }
-                });*/
+                });
             }
         });
         dob_change.setOnClickListener(new View.OnClickListener() {
@@ -256,37 +284,37 @@ public class profile extends AppCompatActivity {
                     @Override
                     public void onClick(View view) {
                         String new_dob = editText.getText().toString();
-                        if(validateName(new_dob).equalsIgnoreCase("empty"))
+                        if(validateDOB(new_dob).equalsIgnoreCase("empty"))
                         {
                             layout.setError("Field cannot be empty");
                             layout.requestFocus();
                         }
-                        else if(validateName(new_dob).equalsIgnoreCase("same"))
+                        else if(validateDOB(new_dob).equalsIgnoreCase("same"))
                         {
                             layout.setError("DOB cannot be same as before");
                             layout.requestFocus();
                         }
-                        else if(validateName(new_dob).equalsIgnoreCase("wrong"))
+                        else if(validateDOB(new_dob).equalsIgnoreCase("wrong"))
                         {
                             layout.setError("Please enter DOB Correctl");
                             layout.requestFocus();
                         }
-                        else if(validateName(new_dob).equalsIgnoreCase("under"))
+                        else if(validateDOB(new_dob).equalsIgnoreCase("under"))
                         {
                             layout.setError("You are under aged to use this app");
                             layout.requestFocus();
                         }
-                        else if(validateName(new_dob).equalsIgnoreCase("invalid"))
+                        else if(validateDOB(new_dob).equalsIgnoreCase("invalid"))
                         {
                             layout.setError("Please enter a valid year");
                             layout.requestFocus();
                         }
-                        else if(validateName(new_dob).equalsIgnoreCase("invalidM"))
+                        else if(validateDOB(new_dob).equalsIgnoreCase("invalidM"))
                         {
                             layout.setError("Please enter a valid month");
                             layout.requestFocus();
                         }
-                        else if(validateName(new_dob).equalsIgnoreCase("invalidD"))
+                        else if(validateDOB(new_dob).equalsIgnoreCase("invalidD"))
                         {
                             layout.setError("Please enter a valid date");
                             layout.requestFocus();
@@ -1480,8 +1508,6 @@ public class profile extends AppCompatActivity {
     private String validateDOB(String val) {
         val = val.replace("/","");
         if (val.isEmpty()) {
-            /*dateOfBirth.setError("Field cannot be empty");
-            dateOfBirth.requestFocus();*/
             return "";
         }
         else if(val.equalsIgnoreCase(dob))
@@ -1490,8 +1516,6 @@ public class profile extends AppCompatActivity {
         }
         else if (!val.matches("\\d{8}"))
         {
-            /*dateOfBirth.setError("Please enter DOB Correctly");
-            dateOfBirth.requestFocus();*/
             return "wrong";
         }
         else
@@ -1507,16 +1531,10 @@ public class profile extends AppCompatActivity {
             int day = todayDate % 100;
             boolean isValidDate = false;
             if (todayDate - dob < 8) {
-                /*dateOfBirth.setError("You are under aged to use this app");
-                dateOfBirth.requestFocus();*/
                 return "under";
             } else if (year < (todayDate / 10000) - 100) {
-                /*dateOfBirth.setError("Please enter a valid year");
-                dateOfBirth.requestFocus();*/
                 return "invalid";
             } else if (month < 1 && month > 12) {
-                /*dateOfBirth.setError("Please enter a valid month");
-                dateOfBirth.requestFocus();*/
                 return "invalidM";
             } else {
                 if (day >= 1 && day <= 31) {
@@ -1533,8 +1551,6 @@ public class profile extends AppCompatActivity {
                     }
                 }
                 if (!isValidDate) {
-                    /*dateOfBirth.setError("Please enter a valid date");
-                    dateOfBirth.requestFocus();*/
                     return "invalidD";
                 } else {
                     return "valid";
@@ -1542,18 +1558,19 @@ public class profile extends AppCompatActivity {
             }
         }
     }
-    /*private boolean validatePhoneNo(String val) {
+    private String validatePhoneNo(String val) {
         if (val.isEmpty()) {
-            number.setError("Phone number is required");
-            number.requestFocus();
-            return false;
-        } else if (!Patterns.PHONE.matcher(val).matches()) {
-            number.setError("Invalid phone number");
-            number.requestFocus();
-            return false;
-        } else {
-            number.setError(null);
-            return true;
+            return "empty";
         }
-    }*/
+        else if(val.equalsIgnoreCase(phone_number))
+        {
+            return "same";
+        }
+        else if (!Patterns.PHONE.matcher(val).matches() || val.length() !=10) {
+            return "invalid";
+        }
+        else {
+            return "true";
+        }
+    }
 }
