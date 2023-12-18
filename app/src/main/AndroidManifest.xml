@@ -23,7 +23,8 @@
             android:exported="false" />
         <activity
             android:name=".profile"
-            android:exported="false" />
+            android:exported="false"
+            android:theme="@style/sign_up" />
         <activity
             android:name=".Sign_up_user"
             android:exported="false"

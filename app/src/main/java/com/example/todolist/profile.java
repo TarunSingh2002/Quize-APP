@@ -1,32 +1,54 @@
 package com.example.todolist;
+import androidx.core.content.ContextCompat;
+
+import static android.view.View.MEASURED_HEIGHT_STATE_SHIFT;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.AppCompatButton;
+import androidx.appcompat.widget.AppCompatEditText;
 import androidx.appcompat.widget.AppCompatTextView;
 
+import android.annotation.SuppressLint;
+import android.app.DatePickerDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
+import android.text.InputType;
 import android.transition.CircularPropagation;
 import android.util.Log;
+import android.util.Patterns;
+import android.view.Gravity;
 import android.view.View;
+import android.view.ViewGroup;
+import android.widget.DatePicker;
+import android.widget.EditText;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.Switch;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
+import com.google.android.material.textfield.TextInputLayout;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.auth.UserProfileChangeRequest;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
+
+import java.text.SimpleDateFormat;
+import java.util.Calendar;
+import java.util.Date;
+import java.util.HashMap;
+import java.util.Map;
 
 public class profile extends AppCompatActivity {
 
@@ -44,6 +66,9 @@ public class profile extends AppCompatActivity {
     private AppCompatButton name_change , email_change , dob_change  , gender_change , number_change;
     private String name , email , dob  , gender , phone_number;
     private String currentAvatar , previousAvatar;
+    private FirebaseDatabase database = FirebaseDatabase.getInstance();
+    private DatabaseReference userRef = database.getReference("User Details");
+    private DatePickerDialog picker;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -71,7 +96,284 @@ public class profile extends AppCompatActivity {
                 Intent intent = new Intent(profile.this, update_email.class);
                 intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_SINGLE_TOP);
                 startActivity(intent);
-                finish();
+
+            }
+        });
+        name_change.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                View dialogView = getLayoutInflater().inflate(R.layout.dialog_box, null);
+                AlertDialog.Builder dialogBuilder = new AlertDialog.Builder(profile.this);
+                dialogBuilder.setView(dialogView);
+                // getting views
+                AppCompatButton btn =dialogView.findViewById(R.id.ok);
+                TextInputLayout layout =dialogView.findViewById(R.id.input_layout);
+                AppCompatEditText editText = dialogView.findViewById(R.id.input);
+                TextView title = dialogView.findViewById(R.id.title);
+                // setting the data in dialog box
+                editText.setInputType(InputType.TYPE_CLASS_TEXT|InputType.TYPE_TEXT_VARIATION_PERSON_NAME);
+                title.setText("Update Name");
+                layout.setHint("User Name");
+                AlertDialog alertDialog = dialogBuilder.create();
+                alertDialog.setOnShowListener(new DialogInterface.OnShowListener() {
+                    @Override
+                    public void onShow(DialogInterface dialogInterface) {
+                        // Change the dialog box background color
+                        alertDialog.getWindow().setBackgroundDrawableResource(R.drawable.dialog_box_with_edit_text);
+                    }
+                });
+                alertDialog.show();
+                // getting the data from edit text
+                btn.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View view) {
+                        String new_name = editText.getText().toString();
+                        if(validateName(new_name).equalsIgnoreCase("empty"))
+                        {
+                            layout.setError("Field cannot be empty");
+                            layout.requestFocus();
+                        }
+                        else if(validateName(new_name).equalsIgnoreCase("same"))
+                        {
+                            layout.setError("Name cannot be same as before");
+                            layout.requestFocus();
+                        }
+                        else
+                        {
+                            aLoadingDialog.show();
+                            name_view.setText(new_name);
+                            UserProfileChangeRequest profileChangeRequest = new UserProfileChangeRequest.Builder().setDisplayName(new_name).build();
+                            firebaseUser.updateProfile(profileChangeRequest);
+                            aLoadingDialog.cancel();
+                            alertDialog.dismiss();
+                        }
+                    }
+                });
+            }
+        });
+        number_change.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                /* View dialogView = getLayoutInflater().inflate(R.layout.dialog_box, null);
+                AlertDialog.Builder dialogBuilder = new AlertDialog.Builder(profile.this);
+                dialogBuilder.setView(dialogView);
+                // getting views
+                AppCompatButton btn =dialogView.findViewById(R.id.ok);
+                TextInputLayout layout =dialogView.findViewById(R.id.input_layout);
+                AppCompatEditText editText = dialogView.findViewById(R.id.input);
+                TextView title = dialogView.findViewById(R.id.title);
+                // setting the data in dialog box
+                title.setText("Update Name");
+                layout.setHint("User Name");
+                AlertDialog alertDialog = dialogBuilder.create();
+                alertDialog.setOnShowListener(new DialogInterface.OnShowListener() {
+                    @Override
+                    public void onShow(DialogInterface dialogInterface) {
+                        // Change the dialog box background color
+                        alertDialog.getWindow().setBackgroundDrawableResource(R.drawable.dialog_box_with_edit_text);
+                    }
+                });
+                alertDialog.show();
+                // getting the data from edit text
+                btn.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View view) {
+                        String new_name = editText.getText().toString();
+                        if(validateName(new_name).equalsIgnoreCase("empty"))
+                        {
+                            layout.setError("Field cannot be empty");
+                            layout.requestFocus();
+                        }
+                        else if(validateName(new_name).equalsIgnoreCase("same"))
+                        {
+                            layout.setError("Name cannot be same as before");
+                            layout.requestFocus();
+                        }
+                        else
+                        {
+                            aLoadingDialog.show();
+                            name_view.setText(new_name);
+                            UserProfileChangeRequest profileChangeRequest = new UserProfileChangeRequest.Builder().setDisplayName(new_name).build();
+                            firebaseUser.updateProfile(profileChangeRequest);
+                            aLoadingDialog.cancel();
+                            alertDialog.dismiss();
+                        }
+                    }
+                });*/
+            }
+        });
+        dob_change.setOnClickListener(new View.OnClickListener() {
+            @SuppressLint("ResourceAsColor")
+            @Override
+            public void onClick(View view) {
+                View dialogView = getLayoutInflater().inflate(R.layout.dialog_box, null);
+                AlertDialog.Builder dialogBuilder = new AlertDialog.Builder(profile.this);
+                dialogBuilder.setView(dialogView);
+                // getting views
+                AppCompatButton btn =dialogView.findViewById(R.id.ok);
+                TextInputLayout layout =dialogView.findViewById(R.id.input_layout);
+                AppCompatEditText editText = dialogView.findViewById(R.id.input);
+                TextView title = dialogView.findViewById(R.id.title);
+                // setting the data in dialog box
+                title.setText("Update DOB");
+                layout.setHint("User DOB");
+                editText.setInputType(InputType.TYPE_NULL);
+                // Fetch the color from resources
+                int goldenColor = ContextCompat.getColor(profile.this, R.color.golden);
+                editText.setTextColor(goldenColor);
+                AlertDialog alertDialog = dialogBuilder.create();
+                alertDialog.setOnShowListener(new DialogInterface.OnShowListener() {
+                    @Override
+                    public void onShow(DialogInterface dialogInterface) {
+                        // Change the dialog box background color
+                        alertDialog.getWindow().setBackgroundDrawableResource(R.drawable.dialog_box_with_edit_text);
+                    }
+                });
+                alertDialog.show();
+                // setting calender on edit text
+                editText.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View view) {
+                        final Calendar calender =Calendar.getInstance();
+                        int day=calender.get(Calendar.DAY_OF_MONTH);
+                        int months=calender.get(Calendar.MONTH);
+                        int year=calender.get(Calendar.YEAR);
+                        //date picker dialog
+                        picker = new DatePickerDialog(profile.this, new DatePickerDialog.OnDateSetListener() {
+                            @Override
+                            public void onDateSet(DatePicker view, int year, int month, int dateOfMonth) {
+                                if(month+1 < 10)
+                                    editText.setText(year+ "/0" +(month+1)+ "/" +dateOfMonth);
+                                else
+                                    editText.setText(year+ "/" +(month+1)+ "/" +dateOfMonth);
+                            }
+                        }, year , months , day);
+                        picker.show();
+                    }
+                });
+                // getting the data from edit text
+                btn.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View view) {
+                        String new_dob = editText.getText().toString();
+                        if(validateName(new_dob).equalsIgnoreCase("empty"))
+                        {
+                            layout.setError("Field cannot be empty");
+                            layout.requestFocus();
+                        }
+                        else if(validateName(new_dob).equalsIgnoreCase("same"))
+                        {
+                            layout.setError("DOB cannot be same as before");
+                            layout.requestFocus();
+                        }
+                        else if(validateName(new_dob).equalsIgnoreCase("wrong"))
+                        {
+                            layout.setError("Please enter DOB Correctl");
+                            layout.requestFocus();
+                        }
+                        else if(validateName(new_dob).equalsIgnoreCase("under"))
+                        {
+                            layout.setError("You are under aged to use this app");
+                            layout.requestFocus();
+                        }
+                        else if(validateName(new_dob).equalsIgnoreCase("invalid"))
+                        {
+                            layout.setError("Please enter a valid year");
+                            layout.requestFocus();
+                        }
+                        else if(validateName(new_dob).equalsIgnoreCase("invalidM"))
+                        {
+                            layout.setError("Please enter a valid month");
+                            layout.requestFocus();
+                        }
+                        else if(validateName(new_dob).equalsIgnoreCase("invalidD"))
+                        {
+                            layout.setError("Please enter a valid date");
+                            layout.requestFocus();
+                        }
+                        else
+                        {
+                            aLoadingDialog.show();
+                            //setting data in database
+                            Map<String, Object> updateDOB = new HashMap<>();
+                            updateDOB.put("dateOfBirth", new_dob); // Replace "ne_dob" with the field where the dob is stored
+                            userRef.child(firebaseUser.getUid()).updateChildren(updateDOB).addOnCompleteListener(new OnCompleteListener<Void>() {
+                                @Override
+                                public void onComplete(@NonNull Task<Void> task) {
+                                    if(task.isSuccessful())
+                                    {
+                                        //do nothing
+                                        dob_view.setText(new_dob);
+                                        alertDialog.dismiss();
+                                        aLoadingDialog.cancel();
+                                    }
+                                    else
+                                    {
+                                        try{
+                                            throw task.getException();
+                                        }
+                                        catch (Exception e)
+                                        {
+                                            Toast.makeText(profile.this, e.getMessage(), Toast.LENGTH_SHORT).show();
+                                        }
+                                        aLoadingDialog.cancel();
+                                    }
+                                }
+                            });
+                        }
+                    }
+                });
+            }
+        });
+        gender_change.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                /* View dialogView = getLayoutInflater().inflate(R.layout.dialog_box, null);
+                AlertDialog.Builder dialogBuilder = new AlertDialog.Builder(profile.this);
+                dialogBuilder.setView(dialogView);
+                // getting views
+                AppCompatButton btn =dialogView.findViewById(R.id.ok);
+                TextInputLayout layout =dialogView.findViewById(R.id.input_layout);
+                AppCompatEditText editText = dialogView.findViewById(R.id.input);
+                TextView title = dialogView.findViewById(R.id.title);
+                // setting the data in dialog box
+                title.setText("Update Name");
+                layout.setHint("User Name");
+                AlertDialog alertDialog = dialogBuilder.create();
+                alertDialog.setOnShowListener(new DialogInterface.OnShowListener() {
+                    @Override
+                    public void onShow(DialogInterface dialogInterface) {
+                        // Change the dialog box background color
+                        alertDialog.getWindow().setBackgroundDrawableResource(R.drawable.dialog_box_with_edit_text);
+                    }
+                });
+                alertDialog.show();
+                // getting the data from edit text
+                btn.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View view) {
+                        String new_name = editText.getText().toString();
+                        if(validateName(new_name).equalsIgnoreCase("empty"))
+                        {
+                            layout.setError("Field cannot be empty");
+                            layout.requestFocus();
+                        }
+                        else if(validateName(new_name).equalsIgnoreCase("same"))
+                        {
+                            layout.setError("Name cannot be same as before");
+                            layout.requestFocus();
+                        }
+                        else
+                        {
+                            aLoadingDialog.show();
+                            name_view.setText(new_name);
+                            UserProfileChangeRequest profileChangeRequest = new UserProfileChangeRequest.Builder().setDisplayName(new_name).build();
+                            firebaseUser.updateProfile(profileChangeRequest);
+                            aLoadingDialog.cancel();
+                            alertDialog.dismiss();
+                        }
+                    }
+                });*/
             }
         });
         circularImageView = findViewById(R.id.circularImageView);
@@ -1167,4 +1469,91 @@ public class profile extends AppCompatActivity {
             }
         });
     }
+    private String validateName(String val) {
+        if (val.isEmpty())
+            return "empty";
+        else if(val.equalsIgnoreCase(name))
+            return "same";
+        else
+            return "";
+    }
+    private String validateDOB(String val) {
+        val = val.replace("/","");
+        if (val.isEmpty()) {
+            /*dateOfBirth.setError("Field cannot be empty");
+            dateOfBirth.requestFocus();*/
+            return "";
+        }
+        else if(val.equalsIgnoreCase(dob))
+        {
+            return "same";
+        }
+        else if (!val.matches("\\d{8}"))
+        {
+            /*dateOfBirth.setError("Please enter DOB Correctly");
+            dateOfBirth.requestFocus();*/
+            return "wrong";
+        }
+        else
+        {
+            int dob = Integer.parseInt(val);
+            Calendar calendar = Calendar.getInstance(); //Get an instance of the Calendar class
+            Date currentDate = calendar.getTime();      // Get the current date:
+            SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyyMMdd");
+            String formattedDate = simpleDateFormat.format(currentDate);
+            int todayDate = Integer.parseInt(formattedDate);
+            int year = todayDate / 10000;
+            int month = (todayDate / 100) % 100;
+            int day = todayDate % 100;
+            boolean isValidDate = false;
+            if (todayDate - dob < 8) {
+                /*dateOfBirth.setError("You are under aged to use this app");
+                dateOfBirth.requestFocus();*/
+                return "under";
+            } else if (year < (todayDate / 10000) - 100) {
+                /*dateOfBirth.setError("Please enter a valid year");
+                dateOfBirth.requestFocus();*/
+                return "invalid";
+            } else if (month < 1 && month > 12) {
+                /*dateOfBirth.setError("Please enter a valid month");
+                dateOfBirth.requestFocus();*/
+                return "invalidM";
+            } else {
+                if (day >= 1 && day <= 31) {
+                    if ((month == 4 || month == 6 || month == 9 || month == 11) && day > 30) {
+                        isValidDate = false; // Months with 30 days
+                    } else if (month == 2) {
+                        if ((year % 4 == 0 && year % 100 != 0) || (year % 400 == 0)) {
+                            isValidDate = day <= 29; // Leap year February
+                        } else {
+                            isValidDate = day <= 28; // Non-leap year February
+                        }
+                    } else {
+                        isValidDate = true;
+                    }
+                }
+                if (!isValidDate) {
+                    /*dateOfBirth.setError("Please enter a valid date");
+                    dateOfBirth.requestFocus();*/
+                    return "invalidD";
+                } else {
+                    return "valid";
+                }
+            }
+        }
+    }
+    /*private boolean validatePhoneNo(String val) {
+        if (val.isEmpty()) {
+            number.setError("Phone number is required");
+            number.requestFocus();
+            return false;
+        } else if (!Patterns.PHONE.matcher(val).matches()) {
+            number.setError("Invalid phone number");
+            number.requestFocus();
+            return false;
+        } else {
+            number.setError(null);
+            return true;
+        }
+    }*/
 }
