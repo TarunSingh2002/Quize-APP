@@ -5,6 +5,8 @@ import androidx.annotation.NonNull;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.AppCompatButton;
+import androidx.appcompat.widget.AppCompatEditText;
+
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
@@ -12,6 +14,7 @@ import android.app.DatePickerDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
+import android.text.InputType;
 import android.util.Log;
 import android.util.Patterns;
 import android.view.View;
@@ -37,7 +40,7 @@ public class Sign_up_user extends AppCompatActivity {
     boolean isChecked = false;
     private ALoadingDialog aLoadingDialog;
     private LottieAnimationView checkBoxAnimation;
-    private TextView login_page, login_page_two;
+    private TextView login_page, login_page_two, dialogbox2,dialogbox1;
     private EditText name_string, email_string, dateOfBirth_string, password_string, number_string, password_again_string;
     private TextInputLayout name, email, dateOfBirth, password, number, password_again;
     private RadioButton radioButton;
@@ -67,6 +70,46 @@ public class Sign_up_user extends AppCompatActivity {
         radioGroup = findViewById(R.id.gender);
         register = findViewById(R.id.register);
 
+        dialogbox1=findViewById(R.id.dialogbox1);
+        dialogbox2=findViewById(R.id.dialogbox2);
+        dialogbox1.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view)
+                {
+                    View dialogView = getLayoutInflater().inflate(R.layout.termsandcondition, null);
+                    AlertDialog.Builder dialogBuilder = new AlertDialog.Builder(Sign_up_user.this);
+                    dialogBuilder.setView(dialogView);
+                    AlertDialog alertDialog = dialogBuilder.create();
+                    alertDialog.setOnShowListener(new DialogInterface.OnShowListener() {
+                        @Override
+                        public void onShow(DialogInterface dialogInterface) {
+                            // Change the dialog box background color
+                            alertDialog.getWindow().setBackgroundDrawableResource(R.drawable.dialog_box_with_edit_text);
+                        }
+                    });
+                    alertDialog.show();
+                }
+
+        });
+        dialogbox2.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view)
+            {
+                View dialogView = getLayoutInflater().inflate(R.layout.termsandcondition, null);
+                AlertDialog.Builder dialogBuilder = new AlertDialog.Builder(Sign_up_user.this);
+                dialogBuilder.setView(dialogView);
+                AlertDialog alertDialog = dialogBuilder.create();
+                alertDialog.setOnShowListener(new DialogInterface.OnShowListener() {
+                    @Override
+                    public void onShow(DialogInterface dialogInterface) {
+                        // Change the dialog box background color
+                        alertDialog.getWindow().setBackgroundDrawableResource(R.drawable.dialog_box_with_edit_text);
+                    }
+                });
+                alertDialog.show();
+            }
+
+        });
         name = findViewById(R.id.name);
         email = findViewById(R.id.email);
         dateOfBirth = findViewById(R.id.dateOfBirth);
@@ -476,4 +519,5 @@ public class Sign_up_user extends AppCompatActivity {
 
         }
     }
+
 }
