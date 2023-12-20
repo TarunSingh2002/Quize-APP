@@ -224,12 +224,14 @@ tools:context=".Sign_up_user">
                                 android:text="I have read and agreed to DayTask"
                                 android:textColor="@color/liteBlue_liter" />
                             <TextView
+                                android:id="@+id/dialogbox2"
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
                                 android:text=" Privacy Policy,"
                                 android:textColor="@color/golden"/>
                         </LinearLayout>
                         <TextView
+                            android:id="@+id/dialogbox1"
                             android:layout_width="wrap_content"
                             android:layout_height="23dp"
                             android:text="Terms and Condition"

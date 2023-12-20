@@ -66,44 +66,38 @@
                     app:layout_constraintBottom_toBottomOf="parent"
                     android:padding="16dp"/>
         </androidx.constraintlayout.widget.ConstraintLayout>
+
         <androidx.constraintlayout.widget.ConstraintLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginBottom="20dp"
             android:background="@drawable/round_corner"
             android:padding="8dp">
+
             <ImageView
                 android:id="@+id/imageViewStart2"
                 android:layout_width="60dp"
                 android:layout_height="60dp"
                 android:padding="10dp"
                 android:src="@drawable/email"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toTopOf="parent"
-                app:layout_constraintBottom_toBottomOf="parent"/>
-            <androidx.appcompat.widget.AppCompatButton
-                android:id="@+id/buttonEnd2"
-                android:layout_width="60dp"
-                android:layout_height="60dp"
-                android:background="@color/liteBlue"
-                android:padding="15dp"
-                app:layout_constraintTop_toTopOf="parent"
                 app:layout_constraintBottom_toBottomOf="parent"
-                android:drawableTop="@drawable/editedit"
-                app:layout_constraintEnd_toEndOf="parent"/>
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent" />
+
             <androidx.appcompat.widget.AppCompatTextView
+                android:id="@+id/email"
                 android:layout_width="0dp"
                 android:layout_height="60dp"
+                android:padding="16dp"
                 android:text="Email"
-                android:textSize="20sp"
                 android:textColor="@color/white"
-                android:id="@+id/email"
-                app:layout_constraintStart_toEndOf="@id/imageViewStart2"
-                app:layout_constraintEnd_toStartOf="@id/buttonEnd2"
-                app:layout_constraintTop_toTopOf="parent"
+                android:textSize="20sp"
                 app:layout_constraintBottom_toBottomOf="parent"
-                android:padding="16dp"/>
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toEndOf="@id/imageViewStart2"
+                app:layout_constraintTop_toTopOf="parent" />
         </androidx.constraintlayout.widget.ConstraintLayout>
+
         <androidx.constraintlayout.widget.ConstraintLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"

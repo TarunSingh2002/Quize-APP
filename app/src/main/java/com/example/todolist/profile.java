@@ -65,7 +65,7 @@ public class profile extends AppCompatActivity {
     AppCompatButton btn;
     private ALoadingDialog aLoadingDialog;
     private AppCompatTextView name_view , email_view , dob_view  , gender_view , number_view;
-    private AppCompatButton name_change , email_change , dob_change  , gender_change , number_change;
+    private AppCompatButton name_change  , dob_change  , gender_change , number_change;
     private String name , email , dob  , gender , phone_number, new_number , new_name;
     private RadioButton radioButton;
     private RadioGroup radioGroup;
@@ -83,7 +83,6 @@ public class profile extends AppCompatActivity {
         //button
         btn=findViewById(R.id.loginOut);
         name_change = findViewById(R.id.buttonEnd);
-        email_change = findViewById(R.id.buttonEnd2);
         dob_change = findViewById(R.id.buttonEnd4);
         gender_change = findViewById(R.id.buttonEnd5);
         number_change = findViewById(R.id.buttonEnd6);
@@ -94,15 +93,6 @@ public class profile extends AppCompatActivity {
         gender_view  = findViewById(R.id.gender);
         number_view  = findViewById(R.id.number);
         //change button click listener
-        email_change.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                Intent intent = new Intent(profile.this, update_email.class);
-                intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_SINGLE_TOP);
-                startActivity(intent);
-
-            }
-        });
         name_change.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -1306,6 +1296,7 @@ public class profile extends AppCompatActivity {
                                 if(task.isSuccessful())
                                 {
                                     aLoadingDialog.cancel();
+                                    previousAvatar=currentAvatar;
                                 }
                                 else {
                                     try{
