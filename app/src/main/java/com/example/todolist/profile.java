@@ -62,7 +62,7 @@ public class profile extends AppCompatActivity {
             avatar31 , avatar32 , avatar33 , avatar34 , avatar35 , avatar36 , avatar37 , avatar38 , avatar39 , avatar40,
             avatar41 , avatar42 , avatar43 , avatar44 , avatar45 , avatar46 , avatar47 , avatar48 , avatar49 , avatar50;
     private FirebaseAuth auth;
-    AppCompatButton btn;
+    AppCompatButton btn , updatePassword , btn2;
     private ALoadingDialog aLoadingDialog;
     private AppCompatTextView name_view , email_view , dob_view  , gender_view , number_view;
     private AppCompatButton name_change  , dob_change  , gender_change , number_change;
@@ -82,7 +82,9 @@ public class profile extends AppCompatActivity {
         aLoadingDialog = new ALoadingDialog(this);
         //button
         btn=findViewById(R.id.loginOut);
+        btn2=findViewById(R.id.deleteProfile);
         name_change = findViewById(R.id.buttonEnd);
+        updatePassword=findViewById(R.id.buttonEnd2);
         dob_change = findViewById(R.id.buttonEnd4);
         gender_change = findViewById(R.id.buttonEnd5);
         number_change = findViewById(R.id.buttonEnd6);
@@ -93,6 +95,22 @@ public class profile extends AppCompatActivity {
         gender_view  = findViewById(R.id.gender);
         number_view  = findViewById(R.id.number);
         //change button click listener
+        btn2.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent intent = new Intent(profile.this, deleteProfile.class);
+                intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_SINGLE_TOP);
+                startActivity(intent);
+            }
+        });
+        updatePassword.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent intent = new Intent(profile.this, updatePassword.class);
+                intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_SINGLE_TOP);
+                startActivity(intent);
+            }
+        });
         name_change.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
