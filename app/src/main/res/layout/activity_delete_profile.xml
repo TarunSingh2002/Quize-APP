@@ -5,6 +5,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:theme="@style/sign_up"
     tools:context=".deleteProfile">
     <LinearLayout
         android:layout_width="match_parent"
@@ -41,7 +42,7 @@
             app:passwordToggleTint="@color/golden"
             style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox">
             <com.google.android.material.textfield.TextInputEditText
-                android:id="@+id/textViewPassword"
+                android:id="@+id/editViewPassword"
                 android:layout_width="match_parent"
                 android:layout_height="60dp"
                 android:inputType="textPassword"
@@ -80,27 +81,32 @@
             android:layout_marginBottom="25dp"
             android:id="@+id/textViewAuth"
             android:text="Your profile is not authenticated/verified yet!"/>
-        <FrameLayout
-            android:id="@+id/frameLayoutDeleteProfile"
+        <LinearLayout
             android:layout_width="match_parent"
+            android:layout_height="wrap_content"
             android:background="@color/golden"
-            android:layout_height="wrap_content">
-            <ImageView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:src="@drawable/remove_user"
-                android:layout_gravity="left|center_vertical"
-                android:layout_marginStart="80dp"
-                android:layout_toStartOf="@id/loginOut"/>
-            <androidx.appcompat.widget.AppCompatButton
-                android:id="@+id/buttonDeleteProfile"
+            android:id="@+id/linearLayoutDeleteProfile"
+            android:orientation="vertical">
+            <FrameLayout
                 android:layout_width="match_parent"
-                android:layout_height="60dp"
-                app:cornerRadius="10dp"
-                android:textColor="@color/black"
-                android:textStyle="bold"
-                android:background="@drawable/button_style_four"
-                android:text="Delete your Profile"/>
-        </FrameLayout>
+                android:layout_height="wrap_content">
+                <ImageView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:src="@drawable/remove_user"
+                    android:layout_gravity="left|center_vertical"
+                    android:layout_marginStart="80dp"
+                    android:layout_toStartOf="@id/loginOut"/>
+                <androidx.appcompat.widget.AppCompatButton
+                    android:id="@+id/buttonDeleteProfile"
+                    android:layout_width="match_parent"
+                    android:layout_height="60dp"
+                    app:cornerRadius="10dp"
+                    android:textColor="@color/black"
+                    android:textStyle="bold"
+                    android:background="@drawable/button_style_four"
+                    android:text="Delete your Profile"/>
+            </FrameLayout>
+        </LinearLayout>
     </LinearLayout>
 </ScrollView>
