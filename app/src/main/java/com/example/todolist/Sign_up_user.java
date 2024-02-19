@@ -217,9 +217,11 @@ public class Sign_up_user extends AppCompatActivity {
                             //Saving a user name in -> firebase user name object
                             UserProfileChangeRequest profileChangeRequest = new UserProfileChangeRequest.Builder().setDisplayName(name).build();
                             firebaseUser.updateProfile(profileChangeRequest); // this piece of code will change the existing uer node
-
+                            //getting current time
+                            long epochTime = System.currentTimeMillis();
+                            String id= String.valueOf(epochTime);
                             //save user data also into firebase
-                            UserDetails writeUserDetails = new UserDetails(dateOfBirth , gender , number); // UserDetails is a new class which gonna add data into firebase
+                            UserDetails writeUserDetails = new UserDetails(dateOfBirth , gender , number,id); // UserDetails is a new class which gonna add data into firebase
                             String avatarID="avatar23";
                             if(gender.equalsIgnoreCase("Male"))
                                 avatarID="avatar6";
